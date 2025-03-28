@@ -69,7 +69,7 @@ function App() {
       {/* Example of showing the last milestone hit, if any */}
       {lastMilestone && (
         <div style={{ marginTop: '1rem' }}>
-          <strong>Last Milestone Hit:</strong> {lastMilestone.label}
+          <strong>Current Milestone:</strong> {lastMilestone.label}
         </div>
       )}
     </div>

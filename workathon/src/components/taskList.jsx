@@ -1,45 +1,28 @@
-import React, { useState, useEffect } from 'react';
+// taskList.jsx
+import React, { useEffect } from 'react';
 import Task from './task';
 
-const TaskList = () => {
-  // We'll store the array of tasks in state
-  const [tasks, setTasks] = useState([]);
+const TaskList = ({ tasks, setTasks }) => {
+  // If you want to fetch tasks here instead of in App, you could.
+  // But then you'd remove the fetch from App and store tasks locally here or pass them up.
 
-  // Load tasks from the server on mount
-  useEffect(() => {
-    fetch('http://localhost:4000/api/tasks')
-      .then((res) => res.json())
-      .then((data) => setTasks(data))
-      .catch((err) => console.error('Error fetching tasks:', err));
-  }, []);
-
-  // Toggle a task's completed status by sending a PUT request to the server
   const handleToggleTask = (taskId) => {
-    // Find the task in our local state
-    const taskToUpdate = tasks.find((task) => task.id === taskId);
+    // Find the task
+    const taskToUpdate = tasks.find((t) => t.id === taskId);
     if (!taskToUpdate) return;
 
-    // Flip its completed field
-    const updatedTask = { 
-      ...taskToUpdate, 
-      completed: !taskToUpdate.completed 
-    };
+    // Flip completion
+    const updatedTask = { ...taskToUpdate, completed: !taskToUpdate.completed };
 
-    // Send the updated task to the server
+    // Update server (optional, if you want to keep them in sync)
     fetch(`http://localhost:4000/api/tasks/${taskId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedTask),
     })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((returnedTask) => {
-        // The server returns the updated task.
-        // Update our local state so the UI reflects the changes.
+        // Update local state so progress bar re-renders
         setTasks((prevTasks) =>
           prevTasks.map((t) =>
             t.id === returnedTask.id ? returnedTask : t
