@@ -1,11 +1,5 @@
 [
   {
-    "id": 1,
-    "name": "Buy groceries",
-    "points": 5,
-    "completed": true
-  },
-  {
     "id": 2,
     "name": "Do laundry",
     "points": 10,
@@ -16,5 +10,11 @@
     "name": "Finish coding tutorial",
     "points": 20,
     "completed": true
+  },
+  {
+    "id": 1743188751750,
+    "name": "new task",
+    "points": 15,
+    "completed": false
   }
 ]

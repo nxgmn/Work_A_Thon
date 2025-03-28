@@ -1,50 +1,117 @@
-// taskList.jsx
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Task from './task';
 
 const TaskList = ({ tasks, setTasks }) => {
-  // If you want to fetch tasks here instead of in App, you could.
-  // But then you'd remove the fetch from App and store tasks locally here or pass them up.
+  // Local state for form inputs
+  const [taskName, setTaskName] = useState('');
+  const [taskPoints, setTaskPoints] = useState('');
 
+  // Toggle a task’s completed status, as before
   const handleToggleTask = (taskId) => {
-    // Find the task
-    const taskToUpdate = tasks.find((t) => t.id === taskId);
-    if (!taskToUpdate) return;
+    const updatedTasks = tasks.map((t) => 
+      t.id === taskId ? { ...t, completed: !t.completed } : t
+    );
+    setTasks(updatedTasks);
+    // Optionally do a PUT request to server here to persist the toggle
+  };
 
-    // Flip completion
-    const updatedTask = { ...taskToUpdate, completed: !taskToUpdate.completed };
+  // 1) Handle adding a new task
+  const handleAddTask = () => {
+    // Basic validation
+    if (!taskName || !taskPoints) {
+      alert('Please provide a task name and point value.');
+      return;
+    }
 
-    // Update server (optional, if you want to keep them in sync)
-    fetch(`http://localhost:4000/api/tasks/${taskId}`, {
-      method: 'PUT',
+    const newTaskData = {
+      name: taskName,
+      points: parseInt(taskPoints, 10),
+      completed: false,
+    };
+
+    // POST to the server
+    fetch('http://localhost:4000/api/tasks', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedTask),
+      body: JSON.stringify(newTaskData),
     })
-      .then((res) => res.json())
-      .then((returnedTask) => {
-        // Update local state so progress bar re-renders
-        setTasks((prevTasks) =>
-          prevTasks.map((t) =>
-            t.id === returnedTask.id ? returnedTask : t
-          )
-        );
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Server error: ${res.status}`);
+        }
+        return res.json();
       })
-      .catch((err) => console.error('Error updating task:', err));
+      .then((createdTask) => {
+        // Update local state so new task appears
+        setTasks((prev) => [...prev, createdTask]);
+        // Reset the form fields
+        setTaskName('');
+        setTaskPoints('');
+      })
+      .catch((err) => console.error('Error creating task:', err));
+  };
+  /**
+   * "Remove" a task from the active list:
+   * - If NOT completed, truly remove it from the array
+   * - If completed, set archived: true but keep it in the array
+   */
+  const handleRemoveTask = (taskId) => {
+    const updatedTasks = tasks.map((t) => {
+      if (t.id === taskId) {
+        // If task is completed, set archived = true
+        if (t.completed) {
+          return { ...t, archived: true };
+        } 
+        // Otherwise, we can skip it so it's truly removed
+        // (we won't include it in the next map)
+        return null;
+      }
+      return t;
+    }).filter(Boolean); // filter out any null items (the truly removed tasks)
+
+    setTasks(updatedTasks);
   };
 
   return (
     <div>
-      <h2>My Tasks</h2>
-      {tasks.map((task) => (
-        <Task
-          key={task.id}
-          id={task.id}
-          name={task.name}
-          points={task.points}
-          completed={task.completed}
-          onToggle={handleToggleTask}
+      <h2>Tasks</h2>
+
+      <h3>add new: </h3>
+      {/* Simple form for adding a task */}
+      <div style={{ marginBottom: '1rem' }}>
+        <input
+          type="text"
+          placeholder="Task name..."
+          value={taskName}
+          onChange={(e) => setTaskName(e.target.value)}
+          style={{ marginRight: '8px' }}
         />
-      ))}
+        <input
+          type="number"
+          placeholder="Points..."
+          value={taskPoints}
+          onChange={(e) => setTaskPoints(e.target.value)}
+          style={{ marginRight: '8px' }}
+        />
+        <button onClick={handleAddTask}>Add Task</button>
+      </div>
+
+      {/* Render existing tasks */}
+      {tasks
+        .filter((task) => !task.archived)
+        .map((task) => (
+          <div key={task.id} style={{ marginBottom: '0.5rem' }}>
+            <Task
+              id={task.id}
+              name={task.name}
+              points={task.points}
+              completed={task.completed}
+              onToggle={handleToggleTask}
+            />
+            <button onClick={() => handleRemoveTask(task.id)}>Remove</button>
+          </div>
+        ))
+      }
     </div>
   );
 };
