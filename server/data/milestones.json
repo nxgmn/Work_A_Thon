@@ -1,12 +1,17 @@
 [
   {
     "id": 1743188965726,
-    "value": 5,
-    "label": "JUST DANCE"
+    "value": 30,
+    "label": "just dance"
   },
   {
     "id": 1743189445206,
     "value": 95,
     "label": "testttttt"
+  },
+  {
+    "id": 1743195949701,
+    "value": 76,
+    "label": "New Milestone"
   }
 ]

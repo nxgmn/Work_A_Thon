@@ -14,6 +14,9 @@ app.use(express.json());
 // Paths to your JSON files
 const TASKS_FILE = path.join(__dirname, './data/tasks.json');
 const MILESTONES_FILE = path.join(__dirname, './data/milestones.json');
+const SETTINGS_FILE = path.join(__dirname, './data/settings.json');
+
+// ========== Helper Functions ==========
 
 // --- Tasks Helpers ---
 function readTasksFromFile() {
@@ -53,76 +56,137 @@ function writeMilestonesToFile(milestones) {
   }
 }
 
-/* 
-  ===============================
-  TASKS ROUTES
-  ===============================
-*/
+// --- Settings Helpers ---
+function readSettingsFromFile() {
+  try {
+    const data = fs.readFileSync(SETTINGS_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading settings file:', error);
+    return { minTaskPoints: 1, maxTaskPoints: 50 };
+  }
+}
 
-// GET all tasks
+function writeSettingsToFile(settings) {
+  try {
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+  } catch (error) {
+    console.error('Error writing settings file:', error);
+  }
+}
+
+// ========== TASK ROUTES ==========
+
+/**
+ * Return the ENTIRE list of tasks (across all users).
+ * Useful for the global progress bar or admin overview.
+ */
 app.get('/api/tasks', (req, res) => {
   const tasks = readTasksFromFile();
   res.json(tasks);
 });
 
-// POST a new task
-app.post('/api/tasks', (req, res) => {
+/* 
+  USER-SPECIFIC TASKS
+  /api/users/:userId/tasks
+*/
+
+// GET /api/users/:userId/tasks
+app.get('/api/users/:userId/tasks', (req, res) => {
+  const userId = parseInt(req.params.userId, 10);
+  let tasks = readTasksFromFile();
+
+  // Filter tasks that belong to this user
+  const userTasks = tasks.filter((t) => t.userId === userId);
+  res.json(userTasks);
+});
+
+// POST /api/users/:userId/tasks
+app.post('/api/users/:userId/tasks', (req, res) => {
+  const userId = parseInt(req.params.userId, 10);
   const { name, points } = req.body;
 
-  if (!name || points == null) {
-    return res.status(400).json({ error: 'Task must have a name and point value.' });
+  // 1) Check constraints from settings
+  const { minTaskPoints, maxTaskPoints } = readSettingsFromFile();
+  if (points < minTaskPoints || points > maxTaskPoints) {
+    return res
+      .status(400)
+      .json({
+        error: `Task points must be between ${minTaskPoints} and ${maxTaskPoints}.`
+      });
   }
 
-  const tasks = readTasksFromFile();
+  // 2) Create the new task
+  let tasks = readTasksFromFile();
   const newTask = {
     id: Date.now(),
     name,
     points,
-    completed: false
+    completed: false,
+    userId
   };
 
   tasks.push(newTask);
   writeTasksToFile(tasks);
-
   res.status(201).json(newTask);
 });
 
-// PUT (update) a task by ID
-app.put('/api/tasks/:id', (req, res) => {
-  const taskId = parseInt(req.params.id, 10);
+// PUT /api/users/:userId/tasks/:taskId
+// (could be toggling completion, changing points, etc.)
+app.put('/api/users/:userId/tasks/:taskId', (req, res) => {
+  const userId = parseInt(req.params.userId, 10);
+  const taskId = parseInt(req.params.taskId, 10);
   const { name, points, completed } = req.body;
 
   let tasks = readTasksFromFile();
-  const index = tasks.findIndex((t) => t.id === taskId);
+  const index = tasks.findIndex((t) => t.id === taskId && t.userId === userId);
 
   if (index === -1) {
-    return res.status(404).json({ error: 'Task not found.' });
+    return res.status(404).json({ error: 'Task not found for this user.' });
   }
 
-  tasks[index] = {
+  // Check constraints if points is updated
+  if (points != null) {
+    const { minTaskPoints, maxTaskPoints } = readSettingsFromFile();
+    if (points < minTaskPoints || points > maxTaskPoints) {
+      return res
+        .status(400)
+        .json({
+          error: `Task points must be between ${minTaskPoints} and ${maxTaskPoints}.`
+        });
+    }
+  }
+
+  const updatedTask = {
     ...tasks[index],
     name: name ?? tasks[index].name,
     points: points ?? tasks[index].points,
     completed: completed ?? tasks[index].completed
   };
 
+  tasks[index] = updatedTask;
   writeTasksToFile(tasks);
-  res.json(tasks[index]);
+  res.json(updatedTask);
 });
 
-// DELETE a task
-app.delete('/api/tasks/:id', (req, res) => {
-  const taskId = parseInt(req.params.id, 10);
+// DELETE /api/users/:userId/tasks/:taskId
+app.delete('/api/users/:userId/tasks/:taskId', (req, res) => {
+  const userId = parseInt(req.params.userId, 10);
+  const taskId = parseInt(req.params.taskId, 10);
 
   let tasks = readTasksFromFile();
-  const updatedTasks = tasks.filter(t => t.id !== taskId);
+  const filtered = tasks.filter(
+    (t) => !(t.id === taskId && t.userId === userId)
+  );
 
-  if (updatedTasks.length === tasks.length) {
-    return res.status(404).json({ error: 'Task not found.' });
+  if (filtered.length === tasks.length) {
+    return res
+      .status(404)
+      .json({ error: 'Task not found or not for this user.' });
   }
 
-  writeTasksToFile(updatedTasks);
-  res.json({ message: `Task ${taskId} deleted.` });
+  writeTasksToFile(filtered);
+  res.json({ message: 'Task deleted' });
 });
 
 /* 
@@ -142,7 +206,9 @@ app.post('/api/milestones', (req, res) => {
   const { value, label } = req.body;
 
   if (value == null || !label) {
-    return res.status(400).json({ error: 'Milestone must have a value and a label.' });
+    return res
+      .status(400)
+      .json({ error: 'Milestone must have a value and a label.' });
   }
 
   const milestones = readMilestonesFromFile();
@@ -185,7 +251,7 @@ app.delete('/api/milestones/:id', (req, res) => {
   const milestoneId = parseInt(req.params.id, 10);
 
   let milestones = readMilestonesFromFile();
-  const updated = milestones.filter(m => m.id !== milestoneId);
+  const updated = milestones.filter((m) => m.id !== milestoneId);
 
   if (updated.length === milestones.length) {
     return res.status(404).json({ error: 'Milestone not found.' });
@@ -194,6 +260,54 @@ app.delete('/api/milestones/:id', (req, res) => {
   writeMilestonesToFile(updated);
   res.json({ message: `Milestone ${milestoneId} deleted.` });
 });
+
+/*
+  ===============================
+  SETTINGS ROUTES
+  ===============================
+*/
+
+// GET /api/settings - read current constraints
+app.get('/api/settings', (req, res) => {
+  const settings = readSettingsFromFile();
+  res.json(settings);
+});
+
+// PUT /api/settings - update constraints
+app.put('/api/settings', (req, res) => {
+  const { minTaskPoints, maxTaskPoints } = req.body;
+  const current = readSettingsFromFile();
+
+  // Update only if provided
+  const updated = {
+    ...current,
+    minTaskPoints: minTaskPoints ?? current.minTaskPoints,
+    maxTaskPoints: maxTaskPoints ?? current.maxTaskPoints
+  };
+
+  writeSettingsToFile(updated);
+  res.json(updated);
+});
+
+// Example route to calculate total from existing tasks
+app.get('/api/points/total', (req, res) => {
+    const tasks = readTasksFromFile(); // read tasks.json or whatever you do
+    const total = tasks
+      .filter((t) => t.completed)
+      .reduce((sum, t) => sum + t.points, 0);
+  
+    res.json({ totalCompletedPoints: total });
+  });
+  
+
+/**
+ * Example: Reset route to clear tasks or mark them incomplete (optional)
+ */
+// app.post('/api/reset', (req, res) => {
+//   // Example: Clear all tasks
+//   writeTasksToFile([]);
+//   res.json({ message: 'All tasks cleared. Progress reset!' });
+// });
 
 /**
  * Start the server

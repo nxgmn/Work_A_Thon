@@ -1,23 +1,8 @@
+// src/components/task.jsx
 import React from 'react';
 
-/**
- * Represents a single task with:
- *  - name: string
- *  - points: number
- *  - completed: boolean
- *  - onToggle: function to call when the task is toggled
- */
-const Task = ({ 
-  id, 
-  name, 
-  points, 
-  completed, 
-  onToggle 
-}) => {
-  
+const Task = ({ id, name, points, completed, onToggle }) => {
   const handleToggle = () => {
-    // When the checkbox is clicked, call the parent's callback
-    // so it can update the 'completed' status and points
     onToggle(id);
   };
 
