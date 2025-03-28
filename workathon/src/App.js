@@ -5,12 +5,11 @@ import TaskList from './components/taskList';
 import './App.css';
 
 function App() {
-
   const [milestones, setMilestones] = useState([]);
   const [lastMilestone, setLastMilestone] = useState(null);
   const [tasks, setTasks] = useState([]);
 
-  // Fetch tasks from the server (so TaskList can display them)
+  // 1) Fetch tasks from the server
   useEffect(() => {
     fetch('http://localhost:4000/api/tasks')
       .then((res) => res.json())
@@ -18,7 +17,7 @@ function App() {
       .catch((err) => console.error('Error fetching tasks:', err));
   }, []);
 
-  // Fetch milestones from the server (so Milestones editor can display them)
+  // 2) Fetch milestones from the server (ONE TIME)
   useEffect(() => {
     fetch('http://localhost:4000/api/milestones')
       .then((res) => res.json())
@@ -26,36 +25,122 @@ function App() {
       .catch((err) => console.error('Error fetching milestones:', err));
   }, []);
 
-  // Called from ProgressBar when a user hits or exceeds a milestone
+  // 3) If a milestone is "hit" by the currentPoints, record it
   const handleMilestoneHit = (milestone) => {
     setLastMilestone(milestone);
-    console.log("Milestone hit!", milestone);
-    // Trigger any UI effect here (e.g. show confetti, open a modal, etc.)
-  };
-  
-  // Called whenever the user changes the milestones in the Milestones editor
-  const handleMilestonesChange = (updatedMilestones) => {
-    setMilestones(updatedMilestones);
-    // NOTE: If you actually want to persist these changes to the server,
-    // you would do a PUT / POST / DELETE call depending on the operation.
+    console.log('Milestone hit!', milestone);
   };
 
-  // Sum up all points from completed tasks
+  // 4) Sum up completed task points
   const totalCompletedPoints = tasks
-    .filter(task => task.completed)
+    .filter((task) => task.completed)
     .reduce((sum, task) => sum + task.points, 0);
+
+  // 5) Functions to modify the milestone array (and persist to server).
+  //    These will be passed down to <Milestones> as props.
+
+  // a) Add new milestone
+  const addMilestone = async () => {
+    try {
+      const newMilestone = { value: 0, label: 'New Reward' };
+      const res = await fetch('http://localhost:4000/api/milestones', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMilestone),
+      });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const created = await res.json();
+
+      // Add it to our local state
+      setMilestones((prev) => [...prev, created]);
+    } catch (err) {
+      console.error('Error creating milestone:', err);
+    }
+  };
+
+  // b) Delete a milestone
+  const deleteMilestone = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:4000/api/milestones/${id}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
+      // Remove from our local array
+      setMilestones((prev) => prev.filter((m) => m.id !== id));
+    } catch (err) {
+      console.error('Error deleting milestone:', err);
+    }
+  };
+
+  // c) Update milestone value
+  const updateMilestoneValue = async (id, newValue) => {
+    const milestoneToUpdate = milestones.find((m) => m.id === id);
+    if (!milestoneToUpdate) return;
+
+    const updatedMilestone = {
+      ...milestoneToUpdate,
+      value: parseInt(newValue, 10) || 0,
+    };
+
+    try {
+      const res = await fetch(`http://localhost:4000/api/milestones/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedMilestone),
+      });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
+      const returnedMilestone = await res.json();
+      setMilestones((prev) =>
+        prev.map((m) => (m.id === returnedMilestone.id ? returnedMilestone : m))
+      );
+    } catch (err) {
+      console.error('Error updating milestone:', err);
+    }
+  };
+
+  // d) Update milestone label
+  const updateMilestoneLabel = async (id, newLabel) => {
+    const milestoneToUpdate = milestones.find((m) => m.id === id);
+    if (!milestoneToUpdate) return;
+
+    const updatedMilestone = {
+      ...milestoneToUpdate,
+      label: newLabel,
+    };
+
+    try {
+      const res = await fetch(`http://localhost:4000/api/milestones/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedMilestone),
+      });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
+      const returnedMilestone = await res.json();
+      setMilestones((prev) =>
+        prev.map((m) => (m.id === returnedMilestone.id ? returnedMilestone : m))
+      );
+    } catch (err) {
+      console.error('Error updating milestone label:', err);
+    }
+  };
 
   return (
     <div>
       <h1>Work-A-Thon!</h1>
 
-      {/* Milestones editor */}
+      {/* Milestone Editor: we pass the array + the add/delete/update callbacks */}
       <Milestones
         milestones={milestones}
-        onChange={handleMilestonesChange}
+        onAdd={addMilestone}
+        onDelete={deleteMilestone}
+        onValueChange={updateMilestoneValue}
+        onLabelChange={updateMilestoneLabel}
       />
 
-      {/* Progress Bar */}
+      {/* Progress Bar sees the current milestone array and currentPoints */}
       <ProgressBar
         totalPoints={100}
         milestones={milestones}
@@ -66,7 +151,7 @@ function App() {
       {/* Task List */}
       <TaskList tasks={tasks} setTasks={setTasks} />
 
-      {/* Example of showing the last milestone hit, if any */}
+      {/* Show the last milestone user has hit */}
       {lastMilestone && (
         <div style={{ marginTop: '1rem' }}>
           <strong>Current Milestone:</strong> {lastMilestone.label}

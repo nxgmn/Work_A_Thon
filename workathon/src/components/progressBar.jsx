@@ -37,7 +37,9 @@ const ProgressBar = ({
           style={{ height: `${progressPercent}%` }}
         />
         {milestones.map((milestone) => {
-          const milestonePercent = (milestone.value / totalPoints) * 100;
+          let milestonePercent = (milestone.value / totalPoints) * 100;
+          if (milestonePercent <= 0) {milestonePercent = 1};
+          if (milestonePercent >= 100) {milestonePercent = 99};
           return (
             <div
               key={milestone.value}
