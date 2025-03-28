@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Buy groceries",
+    "points": 5,
+    "completed": true
+  },
+  {
+    "id": 2,
+    "name": "Do laundry",
+    "points": 10,
+    "completed": true
+  },
+  {
+    "id": 3,
+    "name": "Finish coding tutorial",
+    "points": 20,
+    "completed": false
+  }
+]
