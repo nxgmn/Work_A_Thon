@@ -1,16 +1,1 @@
-[
-  {
-    "id": 1743220886816,
-    "name": "Bana",
-    "points": 10,
-    "completed": true,
-    "userId": 1
-  },
-  {
-    "id": 1743221165491,
-    "name": "homework",
-    "points": 25,
-    "completed": false,
-    "userId": 1
-  }
-]
+[]

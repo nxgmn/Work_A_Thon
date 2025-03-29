@@ -1,7 +1,7 @@
 .reward-progress-bar-container {
   /* Centering the progress bar vertically and horizontally */
-  height: 70vh;
-  margin: 9rem 0;
+  height: 72vh;
+  margin: 11rem 0;
   font-family: sans-serif;
   display: flex;
   justify-content: center;
@@ -62,4 +62,11 @@
 /* Optional: Change font color of the label to match the reversed sunset theme */
 .milestone-label {
   color: #ff6699; /* Match the light pink tone of the sunset */
+}
+
+@media (max-width: 431px) {
+  .reward-progress-bar-container {
+    /* Centering the progress bar vertically and horizontally */
+    margin: 7rem 0;
+  }
 }

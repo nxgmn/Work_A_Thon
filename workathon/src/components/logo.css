@@ -2,11 +2,11 @@
 /* Logo */
 .logo {
     position: absolute;
-    top: 5%; /* Move the logo further up */
-    /* left: 85vw;     */
+    top: 2%; /* Move the logo further up */
     transform: translateX(-50%);
     text-align: center;
     z-index: 10;
+    text-decoration: none;
 }
 
 .logo-text {
@@ -22,6 +22,7 @@
     text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5), 0 0 25px #ffcc66, 0 0 50px #ff9966; /* Enhanced glow effect */
     white-space: nowrap;
     user-select: none;
+    text-decoration: none;
 }
 
 /* Logo Glow Effect */
