@@ -1,5 +1,6 @@
 // src/components/task.jsx
 import React from 'react';
+import './task.css'; // Import CSS
 
 const Task = ({ id, name, points, completed, onToggle }) => {
   const handleToggle = () => {
@@ -7,19 +8,14 @@ const Task = ({ id, name, points, completed, onToggle }) => {
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+    <div className="task-item">
       <input 
         type="checkbox" 
         checked={completed} 
         onChange={handleToggle} 
-        style={{ marginRight: '8px' }}
       />
-      <span style={{ marginRight: '8px' }}>
-        {name}
-      </span>
-      <span style={{ fontStyle: 'italic', color: '#666' }}>
-        ({points} points)
-      </span>
+      <span>{name}</span>
+      <span className="italic">({points} points)</span>
     </div>
   );
 };

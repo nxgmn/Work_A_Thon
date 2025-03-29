@@ -1,0 +1,47 @@
+/* Navbar styling */
+.navbar {
+  position: absolute; /* Position at the bottom */
+  bottom: 0; /* Align to bottom */
+  width: 100%; /* Full width */
+/* Sunset gradient */
+  padding: 1rem 0; /* Space around the content */
+  display: flex;
+  justify-content: center; /* Center the input and button */
+  align-items: center; /* Vertically center content */
+  z-index: 10; /* Ensure it stays above other elements */
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem; /* Space between input and button */
+}
+
+.navbar-input {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 250px; /* Adjust width */
+}
+
+.navbar-button {
+  padding: 0.5rem 1rem;
+  background-color: #ff6699; /* Sunset-inspired button color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-button:hover {
+  background-color: #ff9933; /* Hover effect */
+}
+
+/* Optional: Add some padding to the bottom of the page to prevent the navbar from overlapping content */
+body {
+  padding-bottom: 3rem; /* Adjust based on the navbar height */
+}

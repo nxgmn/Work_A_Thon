@@ -1,6 +1,7 @@
 // src/components/Navbar.jsx
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import './navbar.css'; // Make sure to link the navbar styles
 
 function Navbar() {
   const [userId, setUserId] = useState('');
@@ -14,21 +15,20 @@ function Navbar() {
   };
 
   return (
-    <nav style={{ marginBottom: '1rem' }}>
-      {/* Link to home */}
-      <Link to="/" style={{ marginRight: '1rem' }}>
-        Home
-      </Link>
-
-      {/* Field to enter user ID, then navigate to /user/:userId */}
-      <input
-        type="text"
-        placeholder="Enter user ID"
-        value={userId}
-        onChange={(e) => setUserId(e.target.value)}
-        style={{ marginRight: '8px' }}
-      />
-      <button onClick={handleGoToUserPage}>Go to your tasks</button>
+    <nav className="navbar">
+      <div className="navbar-content">
+        {/* Field to enter user ID, then navigate to /user/:userId */}
+        <input
+          type="text"
+          placeholder="Enter user ID"
+          value={userId}
+          onChange={(e) => setUserId(e.target.value)}
+          className="navbar-input"
+        />
+        <button onClick={handleGoToUserPage} className="navbar-button">
+          Go to your tasks
+        </button>
+      </div>
     </nav>
   );
 }

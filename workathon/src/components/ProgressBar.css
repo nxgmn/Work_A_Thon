@@ -1,61 +1,65 @@
 .reward-progress-bar-container {
-    /* Instead of a fixed width, use a fixed height (adjust to your needs) */
-    height: 50rem;
-    margin: 1rem 0;
-    font-family: sans-serif;
-  }
-  
-  /* You can keep this for any controls/info above/below the bar */
-  .reward-progress-bar-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-  
-  /* The "track" is now tall & narrow */
-  .reward-progress-bar-track {
-    position: relative;
-    width: 10%;   /* narrow width */
-    height: 100%; /* fill parent container's height */
-    background: #eee;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  
-  /* The filled portion grows vertically from the bottom */
-  .reward-progress-bar-fill {
-    position: absolute;
-    left: 0;
-    bottom: 0; /* anchor at bottom */
-    width: 100%;
-    background: #4caf50;
-    /* Instead of width transitions, we transition the height */
-    transition: height 0.3s ease;
-  }
-  
-  /* Milestone markers now span horizontally across the bar.
-     We position them using `bottom: X%` in your component’s inline style. */
-  .reward-progress-bar-milestone {
-    position: absolute;
-    left: 0;
-    width: 100%; /* small horizontal line across the track */
-    height: 3px;
-    background: #000000;
-  }
-  
-  /* Label displayed to the right of the track 
-     (you might fine-tune spacing as needed) */
-  .milestone-label {
-    position: absolute;
-    left: 3rem;           /* place label to the right of the bar */
-    transform: translateY(-50%);
-    top: 50%;             /* default example if you place it by some logic */
-    font-size: 0.8rem;
-    white-space: nowrap;
-    background: #ffffff;
-    padding: 2px 4px;
-    border-radius: 4px;
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
-  }
-  
+  /* Centering the progress bar vertically and horizontally */
+  height: 70vh;
+  margin: 9rem 0;
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reward-progress-bar-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Apply the flipped sunset-like gradient to the progress bar track */
+.reward-progress-bar-track {
+  position: relative;
+  width: 190px;  /* Narrow width */
+  height: 100%; /* Full height */
+  background: linear-gradient(to bottom, #ffcc66, #ff9966, #cc6699, #663366); /* Flipped gradient */
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* The filled portion now uses a reversed sunset-inspired gradient */
+.reward-progress-bar-fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(to bottom, #ff6699, #ff9933, #ffcc33); /* Reversed sunset (pink to yellow) */
+  transition: height 0.3s ease;
+}
+
+/* Milestones adjusted to blend with the gradient */
+.reward-progress-bar-milestone {
+  position: absolute;
+  width: 100%; /* Full width for small lines */
+  height: 3px;
+  background: #ffffff;  /* White color for visibility */
+  opacity: 0.7;  /* Slight transparency for a softer look */
+}
+
+/* Milestone label with a light background for readability */
+.milestone-label {
+  position: absolute;
+  left: 4rem;
+  transform: translateY(-50%);
+  top: 50%;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  background: #ffffff;
+  padding: 2px 4px;
+  border-radius: 4px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  color: #333333; /* Dark text for readability */
+}
+
+/* Optional: Change font color of the label to match the reversed sunset theme */
+.milestone-label {
+  color: #ff6699; /* Match the light pink tone of the sunset */
+}

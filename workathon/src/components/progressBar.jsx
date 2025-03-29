@@ -27,10 +27,6 @@ const ProgressBar = ({
 
   return (
     <div className="reward-progress-bar-container">
-      <div className="reward-progress-bar-info">
-        <span>{`Points: ${currentPoints} / ${totalPoints}`}</span>
-      </div>
-
       <div className="reward-progress-bar-track">
         <div
           className="reward-progress-bar-fill"

@@ -93,7 +93,6 @@ function UserPage() {
 
   return (
     <div>
-      <h1>User {userId}'s Tasks</h1>
       <TaskList
         tasks={userTasks}
         onAddTask={handleAddTask}

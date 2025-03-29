@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTasksContext } from '../context/GlobalTasksContext';
 import ProgressBar from '../components/progressBar';
+import './home.css';
 
 function HomePage() {
   const { allTasks, loadAllTasks } = useTasksContext();
@@ -36,12 +37,29 @@ function HomePage() {
 
   return (
     <div>
-      <h1>Welcome to the Work-A-Thon</h1>
-      <ProgressBar
+    <div class="logo">
+        <span class="logo-text">Work-A-Thon</span>
+    </div>
+
+    <div class="sky">
+        <div class="sun"></div>
+        <div class="speckles">
+            <div class="speckle"></div>
+            <div class="speckle"></div>
+            <div class="speckle"></div>
+            <div class="speckle"></div>
+            <div class="speckle"></div>
+            <div class="speckle"></div>
+            <div class="speckle"></div>
+            <div class="speckle"></div>
+        </div>
+    </div>
+      < ProgressBar
         totalPoints={100}
         currentPoints={totalCompletedPoints}
         milestones={milestones}
       />
+
     </div>
   );
 }

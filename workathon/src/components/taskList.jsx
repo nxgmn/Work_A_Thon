@@ -1,6 +1,7 @@
 // src/components/taskList.jsx
 import React, { useState, useEffect } from 'react';
 import Task from './task';
+import './taskList.css'; // Import CSS
 
 const TaskList = ({
   tasks,
@@ -11,20 +12,17 @@ const TaskList = ({
   const [taskName, setTaskName] = useState('');
   const [taskPoints, setTaskPoints] = useState('');
 
-  // Store admin-defined constraints
   const [settings, setSettings] = useState({
     minTaskPoints: 1,
-    maxTaskPoints: 50
+    maxTaskPoints: 50,
   });
 
-  // Fetch the admin constraints on mount
   useEffect(() => {
     fetch('http://localhost:4000/api/settings')
       .then((res) => res.json())
       .then((data) => setSettings(data))
       .catch((err) => {
         console.error('Error fetching settings:', err);
-        // If fetch fails, we'll just keep default 1..50
       });
   }, []);
 
@@ -34,7 +32,6 @@ const TaskList = ({
       return;
     }
 
-    // Parse points and clamp to admin settings
     let points = parseInt(taskPoints, 10) || 0;
     if (points < settings.minTaskPoints) {
       points = settings.minTaskPoints;
@@ -42,18 +39,14 @@ const TaskList = ({
       points = settings.maxTaskPoints;
     }
 
-    // Now use the clamped value
     onAddTask(taskName, points);
-
-    // Reset fields
     setTaskName('');
     setTaskPoints('');
   };
 
   return (
-    <div>
-      <h2>Tasks</h2>
-      <h3>Add New Task</h3>
+    <div className="task-list-container">
+      <h2>Your Tasks</h2>
 
       <div>
         <input
@@ -61,21 +54,18 @@ const TaskList = ({
           placeholder="Task name..."
           value={taskName}
           onChange={(e) => setTaskName(e.target.value)}
-          style={{ marginRight: '8px' }}
         />
         <input
           type="number"
           placeholder="Points..."
           value={taskPoints}
           onChange={(e) => setTaskPoints(e.target.value)}
-          style={{ marginRight: '8px' }}
         />
         <button onClick={handleAdd}>Add Task</button>
       </div>
 
-      {/* Render existing tasks */}
       {tasks.map((task) => (
-        <div key={task.id} style={{ marginBottom: '0.5rem' }}>
+        <div key={task.id} className="task-item">
           <Task
             id={task.id}
             name={task.name}
@@ -83,7 +73,9 @@ const TaskList = ({
             completed={task.completed}
             onToggle={onToggleTask}
           />
-          <button onClick={() => onRemoveTask(task.id)}>Remove</button>
+          <button onClick={() => onRemoveTask(task.id)} className="remove-btn">
+            Remove
+          </button>
         </div>
       ))}
     </div>

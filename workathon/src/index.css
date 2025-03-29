@@ -1,13 +1,43 @@
 body {
-  margin: 4%;
+
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #ffcc66, #ff9966, #cc6699, #663366);
+    animation: sunset 120s infinite linear;
+
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+@keyframes sunset {
+  0% { background: linear-gradient(to bottom, #ffcc66, #ff9966, #cc6699, #663366); }
+  5% { background: linear-gradient(to bottom, #ffbb66, #ff8866, #bb6688, #552255); }
+  10% { background: linear-gradient(to bottom, #ffaa66, #ff7766, #aa5577, #441144); }
+  15% { background: linear-gradient(to bottom, #ff9966, #cc6699, #884488, #330033); }
+  20% { background: linear-gradient(to bottom, #ee8877, #aa5599, #662277, #220033); }
+  25% { background: linear-gradient(to bottom, #dd6688, #884488, #441166, #110022); }
+  30% { background: linear-gradient(to bottom, #bb5588, #662266, #331155, #000000); }
+  35% { background: linear-gradient(to bottom, #992277, #441144, #220033, #000000); }
+  40% { background: linear-gradient(to bottom, #771166, #220033, #110022, #000000); }
+  45% { background: linear-gradient(to bottom, #550055, #110022, #000000, #000000); }
+  50% { background: linear-gradient(to bottom, #220033, #000000, #000000, #000000); }
+  55% { background: linear-gradient(to bottom, #220033, #220022, #331133, #110011); }
+  60% { background: linear-gradient(to bottom, #330044, #331144, #552255, #220033); }
+  65% { background: linear-gradient(to bottom, #440055, #553377, #884488, #330033); }
+  70% { background: linear-gradient(to bottom, #550066, #773388, #aa5599, #441144); }
+  75% { background: linear-gradient(to bottom, #770077, #aa5599, #dd6688, #552255); }
+  80% { background: linear-gradient(to bottom, #990088, #cc6699, #ee8877, #773366); }
+  85% { background: linear-gradient(to bottom, #bb2299, #ff7766, #ff9966, #884488); }
+  90% { background: linear-gradient(to bottom, #dd44aa, #ff8866, #ffaa66, #aa5599); }
+  95% { background: linear-gradient(to bottom, #ff66bb, #ff9966, #ffbb66, #cc6699); }
+  100% { background: linear-gradient(to bottom, #ffcc66, #ff9966, #cc6699, #663366); }
 }

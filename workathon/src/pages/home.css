@@ -1,0 +1,136 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Logo */
+.logo {
+    position: absolute;
+    top: 5%; /* Move the logo further up */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+}
+
+.logo-text {
+    font-family: 'Lobster', sans-serif; /* Change font to something more stylized */
+    font-size: 4rem; /* Make the font size bigger */
+    font-weight: bold;
+    background: linear-gradient(to bottom, #ffcc66, #ff9966, #cc6699);
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    animation: logoGlow 2s infinite alternate;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5), 0 0 25px #ffcc66, 0 0 50px #ff9966; /* Enhanced glow effect */
+    white-space: nowrap;
+}
+
+/* Animated Sky */
+.sky {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #ffcc66, #ff9966, #cc6699, #663366);
+    animation: sunset 120s infinite linear;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Sun */
+.sun {
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, #ffcc33 30%, #ff9933 60%);
+    border-radius: 50%;
+    position: absolute;
+    top: 10%;
+    left: -10%;
+    animation: sunMove 60s infinite linear;
+}
+
+/* Speckles (Stars/Dust) */
+.speckles {
+    position: absolute;
+    width: 100vh;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* Prevent interaction */
+}
+
+.speckle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    animation: twinkle 5s infinite alternate ease-in-out;
+}
+
+/* Random positioning */
+.speckle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+.speckle:nth-child(2) { top: 30%; left: 50%; animation-delay: 1s; }
+.speckle:nth-child(3) { top: 70%; left: 80%; animation-delay: 2s; }
+.speckle:nth-child(4) { top: 50%; left: 10%; animation-delay: 3s; }
+.speckle:nth-child(5) { top: 80%; left: 40%; animation-delay: 4s; }
+.speckle:nth-child(6) { top: 20%; left: 70%; animation-delay: 2.5s; }
+.speckle:nth-child(7) { top: 60%; left: 25%; animation-delay: 3.5s; }
+.speckle:nth-child(8) { top: 90%; left: 60%; animation-delay: 1.5s; }
+
+/* Twinkle animation */
+@keyframes twinkle {
+    0% { opacity: 0; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.2); }
+    100% { opacity: 0; transform: scale(1); }
+}
+
+/* Logo Glow Effect */
+@keyframes logoGlow {
+    0% { text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5), 0 0 25px #ffcc66, 0 0 50px #ff9966; }
+    100% { text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5), 0 0 15px #ffcc66, 0 0 30px #cc6699; }
+}
+
+
+/* Sun Continuous Curved Movement */
+@keyframes sunMove {
+    0% { transform: translate(-10vw, 10vh); }
+    25% { transform: translate(25vw, 0vh); }
+    50% { transform: translate(50vw, -5vh); }
+    75% { transform: translate(75vw, 0vh); }
+    100% { transform: translate(110vw, 10vh); }
+}
+
+/* Media Query to adjust the logo size for smaller screens */
+@media (max-width: 1036px) {
+    .logo-text {
+      font-size: 3rem; /* Smaller font size */
+      letter-spacing: 3px; /* Adjust letter-spacing if necessary */
+    }
+  }
+
+  @media (max-width: 430px) {
+    .logo-text {
+      font-size: 2.8rem; /* Smaller font size */
+      letter-spacing: 3px; /* Adjust letter-spacing if necessary */
+    }
+  }
+
+  @media (max-width: 372px) {
+    .logo-text {
+      font-size: 2.5rem; /* Smaller font size */
+      letter-spacing: 3px; /* Adjust letter-spacing if necessary */
+    }
+  }
+  
