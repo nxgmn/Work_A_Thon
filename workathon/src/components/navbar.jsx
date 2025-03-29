@@ -21,7 +21,8 @@ function Navbar() {
       }
       const data = await response.json();
       // If user exists, navigate to the user page
-      navigate(`/Work_A_Thon/user/${trimmedUsername}`);
+      if (trimmedUsername === "admin") { navigate('/Work_A_Thon/admin'); }
+      else { navigate(`/Work_A_Thon/user/${trimmedUsername}`); }
     } catch (err) {
       setError(err.message);
     }
