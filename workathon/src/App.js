@@ -11,13 +11,13 @@ function App() {
       <Navbar />
       <Routes>
         {/* 1) Home */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/Work_A_Thon" element={<HomePage />} />
 
         {/* 2) Admin */}
-        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/Work_A_Thon/admin" element={<AdminPage />} />
 
         {/* 3) User */}
-        <Route path="/user/:username" element={<UserPage />} />
+        <Route path="/Work_A_Thon/user/:username" element={<UserPage />} />
 
         {/* Add more routes if needed */}
       </Routes>

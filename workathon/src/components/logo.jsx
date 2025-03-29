@@ -4,7 +4,7 @@ import './logo.css';
 
 const Logo = () => {
   return (
-    <Link to="/" className="logo">
+    <Link to="/Work_A_Thon" className="logo">
       <span className="logo-text">Work-A-Thon</span>
     </Link>
   );
