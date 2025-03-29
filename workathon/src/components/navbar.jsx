@@ -10,6 +10,7 @@ function Navbar() {
   const handleGoToUserPage = async () => {
     const trimmedUsername = username.trim();
     if (!trimmedUsername) return; // Nothing to do if username is empty
+    if (trimmedUsername === "admin") { navigate('/Work_A_Thon/admin'); }
 
     try {
       // Clear previous error
@@ -21,8 +22,8 @@ function Navbar() {
       }
       const data = await response.json();
       // If user exists, navigate to the user page
-      if (trimmedUsername === "admin") { navigate('/Work_A_Thon/admin'); }
-      else { navigate(`/Work_A_Thon/user/${trimmedUsername}`); }
+
+      navigate(`/Work_A_Thon/user/${trimmedUsername}`);
     } catch (err) {
       setError(err.message);
     }
