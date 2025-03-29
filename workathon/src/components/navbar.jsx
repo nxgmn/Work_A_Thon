@@ -10,7 +10,7 @@ function Navbar() {
   const handleGoToUserPage = async () => {
     const trimmedUsername = username.trim();
     if (!trimmedUsername) return; // Nothing to do if username is empty
-    if (trimmedUsername === "admin") { navigate('/Work_A_Thon/admin'); }
+    if (trimmedUsername === "admin") { navigate('/Work_A_Thon/admin'); return;}
 
     try {
       // Clear previous error
