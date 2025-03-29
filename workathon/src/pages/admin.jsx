@@ -1,6 +1,8 @@
+// src/pages/AdminPage.jsx
 import React, { useState, useEffect } from 'react';
 import Milestones from '../components/milestones';
 import Settings from '../components/taskSettings';
+import Users from '../components/users';
 
 function AdminPage() {
   const [adminMilestones, setAdminMilestones] = useState([]);
@@ -13,11 +15,9 @@ function AdminPage() {
       .catch((err) => console.error('Error fetching milestones:', err));
   }, []);
 
-  // Add a new milestone on the server
+  // Milestone handlers
   const handleAdd = () => {
-    // We want an initial label & value
     const newMilestoneData = { label: 'New Milestone', value: 0 };
-
     fetch('http://localhost:4000/api/milestones', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -30,7 +30,6 @@ function AdminPage() {
       .catch((err) => console.error('Error creating milestone:', err));
   };
 
-  // Remove a milestone
   const handleRemove = (id) => {
     fetch(`http://localhost:4000/api/milestones/${id}`, {
       method: 'DELETE',
@@ -44,14 +43,10 @@ function AdminPage() {
       .catch((err) => console.error(err));
   };
 
-  // Update the label
   const handleLabelChange = (id, newLabel) => {
-    // find the milestone
     const milestone = adminMilestones.find((m) => m.id === id);
     if (!milestone) return;
-
     const updatedMilestone = { ...milestone, label: newLabel };
-
     fetch(`http://localhost:4000/api/milestones/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -59,7 +54,6 @@ function AdminPage() {
     })
       .then((res) => res.json())
       .then((returned) => {
-        // replace in state
         setAdminMilestones((prev) =>
           prev.map((m) => (m.id === returned.id ? returned : m))
         );
@@ -67,11 +61,9 @@ function AdminPage() {
       .catch((err) => console.error(err));
   };
 
-  // Update the value
   const handleValueChange = (id, newVal) => {
     const milestone = adminMilestones.find((m) => m.id === id);
     if (!milestone) return;
-
     const updated = { ...milestone, value: parseInt(newVal, 10) || 0 };
     fetch(`http://localhost:4000/api/milestones/${id}`, {
       method: 'PUT',
@@ -91,8 +83,10 @@ function AdminPage() {
     <div>
       <h1>Admin Panel</h1>
 
-    <Settings />
+      {/* Settings component for task constraints */}
+      <Settings />
 
+      {/* Milestones editor */}
       <Milestones
         milestones={adminMilestones}
         onAdd={handleAdd}
@@ -100,6 +94,11 @@ function AdminPage() {
         onLabelChange={handleLabelChange}
         onValueChange={handleValueChange}
       />
+
+      <hr />
+
+      {/* Users component for controlling group access */}
+      <Users />
     </div>
   );
 }

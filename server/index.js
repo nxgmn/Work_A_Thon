@@ -15,8 +15,30 @@ app.use(express.json());
 const TASKS_FILE = path.join(__dirname, './data/tasks.json');
 const MILESTONES_FILE = path.join(__dirname, './data/milestones.json');
 const SETTINGS_FILE = path.join(__dirname, './data/settings.json');
+const USERS_FILE = path.join(__dirname, './data/users.json');
+
 
 // ========== Helper Functions ==========
+
+// --- Users Helpers ---
+function readUsersFromFile() {
+  try {
+    const data = fs.readFileSync(USERS_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading users file:', error);
+    return [];
+  }
+}
+
+function writeUsersToFile(users) {
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  } catch (error) {
+    console.error('Error writing users file:', error);
+  }
+}
+
 
 // --- Tasks Helpers ---
 function readTasksFromFile() {
@@ -300,14 +322,77 @@ app.get('/api/points/total', (req, res) => {
   });
   
 
-/**
- * Example: Reset route to clear tasks or mark them incomplete (optional)
- */
-// app.post('/api/reset', (req, res) => {
-//   // Example: Clear all tasks
-//   writeTasksToFile([]);
-//   res.json({ message: 'All tasks cleared. Progress reset!' });
-// });
+/* 
+  ===============================
+  USERS ROUTES
+  ===============================
+*/
+
+// GET all users
+app.get('/api/users', (req, res) => {
+  const users = readUsersFromFile();
+  res.json(users);
+});
+
+// POST a new user
+app.post('/api/users', (req, res) => {
+  const { name } = req.body;
+  if (!name) {
+    return res.status(400).json({ error: 'User must have a name.' });
+  }
+  
+  // Read current users
+  let users = readUsersFromFile();
+
+  // Determine new user's ID
+  // Option 1: Use auto-increment by finding the max existing id
+  let newId = 1;
+  if (users.length > 0) {
+    newId = Math.max(...users.map(u => u.id)) + 1;
+  }
+  // Alternatively, you could use Date.now()
+
+  const newUser = {
+    id: newId,
+    name
+  };
+
+  users.push(newUser);
+  writeUsersToFile(users);
+  res.status(201).json(newUser);
+});
+
+// DELETE a user by id
+app.delete('/api/users/:id', (req, res) => {
+  const userId = parseInt(req.params.id, 10);
+  let users = readUsersFromFile();
+  const filtered = users.filter(u => u.id !== userId);
+
+  if (filtered.length === users.length) {
+    return res.status(404).json({ error: 'User not found.' });
+  }
+
+  writeUsersToFile(filtered);
+  res.json({ message: `User ${userId} deleted.` });
+});
+
+
+// In your index.js (server)
+app.get('/api/users/getUserId', (req, res) => {
+  const { username } = req.query;
+  if (!username) {
+    return res.status(400).json({ error: 'Username parameter is required.' });
+  }
+  // Perform a case-insensitive search
+  const data = fs.readFileSync(USERS_FILE, 'utf8');
+  const users = JSON.parse(data);
+  const user = users.find(u => u.name.toLowerCase() === username.toLowerCase());
+  if (!user) {
+    return res.status(404).json({ error: 'User not found.' });
+  }
+  res.json({ id: user.id });
+});
+
 
 /**
  * Start the server

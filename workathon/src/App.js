@@ -17,7 +17,7 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
 
         {/* 3) User */}
-        <Route path="/user/:userId" element={<UserPage />} />
+        <Route path="/user/:username" element={<UserPage />} />
 
         {/* Add more routes if needed */}
       </Routes>

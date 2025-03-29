@@ -3,32 +3,44 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTasksContext } from '../context/GlobalTasksContext';
 import TaskList from '../components/taskList';
+import Logo from '../components/logo';
 
 function UserPage() {
-  const { userId } = useParams();
+  const { username } = useParams();
   const { allTasks, setAllTasks, loadAllTasks } = useTasksContext();
+  const [userId, setUserId] = useState(null);
   const [userTasks, setUserTasks] = useState([]);
 
-  // We can either:
-  // 1) just do local fetch for user tasks, or
-  // 2) rely on the global allTasks array.
-
-  // Quick approach: filter allTasks for this user
   useEffect(() => {
-    // whenever allTasks changes, update userTasks
-    const filtered = allTasks.filter((t) => t.userId === parseInt(userId, 10));
-    setUserTasks(filtered);
+    if (username) {
+      fetch(`http://localhost:4000/api/users/getUserId?username=${encodeURIComponent(username)}`)
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error('User not found');
+          }
+          return res.json();
+        })
+        .then((data) => setUserId(data.id))
+        .catch((err) => console.error('Error fetching user ID:', err));
+    }
+  }, [username]);
+
+  // 2) Whenever the global tasks change, filter for this user's tasks using userId
+  useEffect(() => {
+    if (userId !== null) {
+      const filtered = allTasks.filter((t) => t.userId === userId);
+      setUserTasks(filtered);
+    }
   }, [allTasks, userId]);
 
-  // If you want to re-fetch from the server specifically for this user, you can,
-  // but let's rely on loadAllTasks for a "global" approach.
-  // Optional: On mount, we can call loadAllTasks() to ensure we have the latest
+  // 3) Optionally, re-fetch global tasks on mount to ensure you have the latest data
   useEffect(() => {
     loadAllTasks();
   }, [loadAllTasks]);
 
   // Function to add a new task for this user
   const handleAddTask = async (name, points) => {
+    if (userId === null) return;
     try {
       const res = await fetch(`http://localhost:4000/api/users/${userId}/tasks`, {
         method: 'POST',
@@ -39,8 +51,7 @@ function UserPage() {
         throw new Error(`Could not add task: ${res.status}`);
       }
       const newTask = await res.json();
-
-      // Update global array
+      // Update global tasks context
       setAllTasks((prev) => [...prev, newTask]);
     } catch (error) {
       console.error('Error adding user task:', error);
@@ -49,12 +60,10 @@ function UserPage() {
 
   // Toggling a task (PUT /api/users/:userId/tasks/:taskId)
   const handleToggleTask = async (taskId) => {
-    // find the task
+    if (userId === null) return;
     const task = allTasks.find((t) => t.id === taskId);
     if (!task) return;
-
     const updatedTask = { ...task, completed: !task.completed };
-
     try {
       const res = await fetch(`http://localhost:4000/api/users/${userId}/tasks/${taskId}`, {
         method: 'PUT',
@@ -65,8 +74,6 @@ function UserPage() {
         throw new Error(`Could not toggle task: ${res.status}`);
       }
       const returnedTask = await res.json();
-
-      // Replace in global array
       setAllTasks((prev) =>
         prev.map((t) => (t.id === returnedTask.id ? returnedTask : t))
       );
@@ -77,6 +84,7 @@ function UserPage() {
 
   // Remove a task for this user
   const handleRemoveTask = async (taskId) => {
+    if (userId === null) return;
     try {
       const res = await fetch(`http://localhost:4000/api/users/${userId}/tasks/${taskId}`, {
         method: 'DELETE',
@@ -84,15 +92,20 @@ function UserPage() {
       if (!res.ok) {
         throw new Error(`Could not delete task: ${res.status}`);
       }
-      // remove from global array
       setAllTasks((prev) => prev.filter((t) => t.id !== taskId));
     } catch (error) {
       console.error('Error deleting user task:', error);
     }
   };
 
+  // Until we have a userId, display a loading message
+  if (userId === null) {
+    return <div>Loading user data...</div>;
+  }
+
   return (
     <div>
+      <Logo />
       <TaskList
         tasks={userTasks}
         onAddTask={handleAddTask}

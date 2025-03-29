@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useTasksContext } from '../context/GlobalTasksContext';
 import ProgressBar from '../components/progressBar';
 import './home.css';
+import DisplayUsers from '../components/displayUsers';
 
 function HomePage() {
   const { allTasks, loadAllTasks } = useTasksContext();
@@ -40,7 +41,6 @@ function HomePage() {
     <div class="logo">
         <span class="logo-text">Work-A-Thon</span>
     </div>
-
     <div class="sky">
         <div class="sun"></div>
         <div class="speckles">
