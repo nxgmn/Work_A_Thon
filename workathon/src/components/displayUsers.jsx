@@ -6,7 +6,7 @@ const DisplayUsers = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/users")
+    fetch("https://work-a-thon.onrender.com/api/users")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch users");

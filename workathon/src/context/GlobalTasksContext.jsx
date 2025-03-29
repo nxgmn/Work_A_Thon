@@ -15,7 +15,7 @@ export function TasksProvider({ children }) {
 
   // Function to fetch or refresh all tasks from server
   function loadAllTasks() {
-    fetch('http://localhost:4000/api/tasks')
+    fetch('https://work-a-thon.onrender.com/api/tasks')
       .then((res) => res.json())
       .then((data) => setAllTasks(data))
       .catch((err) => console.error('Error fetching tasks:', err));

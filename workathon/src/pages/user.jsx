@@ -13,7 +13,7 @@ function UserPage() {
 
   useEffect(() => {
     if (username) {
-      fetch(`http://localhost:4000/api/users/getUserId?username=${encodeURIComponent(username)}`)
+      fetch(`https://work-a-thon.onrender.com/api/users/getUserId?username=${encodeURIComponent(username)}`)
         .then((res) => {
           if (!res.ok) {
             throw new Error('User not found');
@@ -42,7 +42,7 @@ function UserPage() {
   const handleAddTask = async (name, points) => {
     if (userId === null) return;
     try {
-      const res = await fetch(`http://localhost:4000/api/users/${userId}/tasks`, {
+      const res = await fetch(`https://work-a-thon.onrender.com/api/users/${userId}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, points }),
@@ -65,7 +65,7 @@ function UserPage() {
     if (!task) return;
     const updatedTask = { ...task, completed: !task.completed };
     try {
-      const res = await fetch(`http://localhost:4000/api/users/${userId}/tasks/${taskId}`, {
+      const res = await fetch(`https://work-a-thon.onrender.com/api/users/${userId}/tasks/${taskId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedTask),
@@ -86,7 +86,7 @@ function UserPage() {
   const handleRemoveTask = async (taskId) => {
     if (userId === null) return;
     try {
-      const res = await fetch(`http://localhost:4000/api/users/${userId}/tasks/${taskId}`, {
+      const res = await fetch(`https://work-a-thon.onrender.com/api/users/${userId}/tasks/${taskId}`, {
         method: 'DELETE',
       });
       if (!res.ok) {

@@ -15,7 +15,7 @@ function Navbar() {
       // Clear previous error
       setError('');
       // Call the backend endpoint to check if the user exists
-      const response = await fetch(`http://localhost:4000/api/users/getUserId?username=${encodeURIComponent(trimmedUsername)}`);
+      const response = await fetch(`https://work-a-thon.onrender.com/api/users/getUserId?username=${encodeURIComponent(trimmedUsername)}`);
       if (!response.ok) {
         throw new Error('User not found');
       }

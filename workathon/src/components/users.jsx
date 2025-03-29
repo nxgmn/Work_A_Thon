@@ -7,7 +7,7 @@ export default function Users() {
 
   // Fetch the users from the server when the component mounts
   useEffect(() => {
-    fetch('http://localhost:4000/api/users')
+    fetch('https://work-a-thon.onrender.com/api/users')
       .then((res) => res.json())
       .then((data) => setUsers(data))
       .catch((err) => console.error('Error fetching users:', err));
@@ -22,7 +22,7 @@ export default function Users() {
     // Create a new user object. The backend is responsible for assigning an auto-incremented ID.
     const newUser = { name: newUserName.trim() };
 
-    fetch('http://localhost:4000/api/users', {
+    fetch('https://work-a-thon.onrender.com/api/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newUser)
@@ -43,7 +43,7 @@ export default function Users() {
 
   // Handler to remove a user
   const handleRemoveUser = (id) => {
-    fetch(`http://localhost:4000/api/users/${id}`, {
+    fetch(`https://work-a-thon.onrender.com/api/users/${id}`, {
       method: 'DELETE'
     })
       .then((res) => {

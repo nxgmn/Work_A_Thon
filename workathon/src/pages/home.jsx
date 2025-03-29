@@ -25,7 +25,7 @@ function HomePage() {
 
   // 2) Fetch milestones once on mount (or poll similarly if needed)
   useEffect(() => {
-    fetch('http://localhost:4000/api/milestones')
+    fetch('https://work-a-thon.onrender.com/api/milestones')
       .then((res) => res.json())
       .then((data) => setMilestones(data))
       .catch((err) => console.error('Error fetching milestones:', err));

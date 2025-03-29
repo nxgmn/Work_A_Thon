@@ -9,7 +9,7 @@ function AdminPage() {
 
   // Fetch milestones on mount
   useEffect(() => {
-    fetch('http://localhost:4000/api/milestones')
+    fetch('https://work-a-thon.onrender.com/api/milestones')
       .then((res) => res.json())
       .then((data) => setAdminMilestones(data))
       .catch((err) => console.error('Error fetching milestones:', err));
@@ -18,7 +18,7 @@ function AdminPage() {
   // Milestone handlers
   const handleAdd = () => {
     const newMilestoneData = { label: 'New Milestone', value: 0 };
-    fetch('http://localhost:4000/api/milestones', {
+    fetch('https://work-a-thon.onrender.com/api/milestones', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newMilestoneData),
@@ -31,7 +31,7 @@ function AdminPage() {
   };
 
   const handleRemove = (id) => {
-    fetch(`http://localhost:4000/api/milestones/${id}`, {
+    fetch(`https://work-a-thon.onrender.com/api/milestones/${id}`, {
       method: 'DELETE',
     })
       .then((res) => {
@@ -47,7 +47,7 @@ function AdminPage() {
     const milestone = adminMilestones.find((m) => m.id === id);
     if (!milestone) return;
     const updatedMilestone = { ...milestone, label: newLabel };
-    fetch(`http://localhost:4000/api/milestones/${id}`, {
+    fetch(`https://work-a-thon.onrender.com/api/milestones/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedMilestone),
@@ -65,7 +65,7 @@ function AdminPage() {
     const milestone = adminMilestones.find((m) => m.id === id);
     if (!milestone) return;
     const updated = { ...milestone, value: parseInt(newVal, 10) || 0 };
-    fetch(`http://localhost:4000/api/milestones/${id}`, {
+    fetch(`https://work-a-thon.onrender.com/api/milestones/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updated),

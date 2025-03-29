@@ -11,7 +11,7 @@ export default function Settings() {
 
   // 1) Fetch current settings on mount
   useEffect(() => {
-    fetch('http://localhost:4000/api/settings')
+    fetch('https://work-a-thon.onrender.com/api/settings')
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Failed to fetch settings: ${res.status}`);
@@ -41,7 +41,7 @@ export default function Settings() {
 
     // Immediately call PUT /api/settings
     try {
-      const response = await fetch('http://localhost:4000/api/settings', {
+      const response = await fetch('https://work-a-thon.onrender.com/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

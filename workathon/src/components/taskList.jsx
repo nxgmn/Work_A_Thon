@@ -18,7 +18,7 @@ const TaskList = ({
   });
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/settings')
+    fetch('https://work-a-thon.onrender.com/api/settings')
       .then((res) => res.json())
       .then((data) => setSettings(data))
       .catch((err) => {

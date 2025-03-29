@@ -398,5 +398,5 @@ app.get('/api/users/getUserId', (req, res) => {
  * Start the server
  */
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`Server is running at https://work-a-thon.onrender.com`);
 });
